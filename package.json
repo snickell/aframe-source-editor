@@ -1,6 +1,6 @@
 {
   "name": "three-codeeditor",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "codeeditor for three.js",
   "main": "index.js",
   "directories": {
