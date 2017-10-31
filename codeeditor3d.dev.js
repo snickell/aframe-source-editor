@@ -27627,6 +27627,7 @@ return;
     el.style.left = (posX || 0) + "px";
     el.style.top = (posY || 0) + "px";
     el.style.zIndex = -1000;
+    el.style.fontSize = "24px";
     // el.style.visibility = "hidden";
     el.style.position = "fixed";
     var editor = ace.edit(el);
