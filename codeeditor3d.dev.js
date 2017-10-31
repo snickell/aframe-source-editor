@@ -27627,14 +27627,12 @@ return;
     el.style.left = (posX || 0) + "px";
     el.style.top = (posY || 0) + "px";
     el.style.zIndex = -1000;
-    //el.style.fontSize = "24px";
     // el.style.visibility = "hidden";
     el.style.position = "fixed";
     var editor = ace.edit(el);
     editor.setOption("useWorker", false);
     editor.setOption("showGutter", false);
     editor.setOption("tabSize", 2);
-    editor.setFontSize("24px");
 
     editor.cleanup = function() {
       editor.renderer.removeAllListeners("afterRender");
