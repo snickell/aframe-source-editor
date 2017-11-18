@@ -28506,9 +28506,7 @@ return;
 
   function raycastIntersectionToDomXY(intersection, domElement) {
     if (!intersection) return null;
-		
-		console.log("intersection.uv = ", intersection.uv);
-				
+						
     //var localCoords = convertToBrowserCoords(intersection, intersection.object);
 		const mesh3D = intersection.object;
     mesh3D.geometry.computeBoundingBox();
