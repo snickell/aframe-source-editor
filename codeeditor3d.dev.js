@@ -27402,19 +27402,19 @@ var worker = exports.worker = {
       this._onMouseOver = function(evt) {  return this.onMouseOver(evt); }.bind(this);
       this._onMouseOut = function(evt) { return this.onMouseOut(evt); }.bind(this);
 
-      this.events.addEventListener(this, 'mousedown', this._onMouseDown, false);
-      this.events.addEventListener(this, 'mousemove', this._onMouseMove, false);
-      this.events.addEventListener(this, 'mousewheel', this._onMouseWheel, false);
-      this.events.addEventListener(this, 'mouseover', this._onMouseOver, false);
-      this.events.addEventListener(this, 'mouseout', this._onMouseOut, false);
+      this.events.addEventListener('mousedown', this._onMouseDown, false);
+      this.events.addEventListener('mousemove', this._onMouseMove, false);
+      this.events.addEventListener('mousewheel', this._onMouseWheel, false);
+      this.events.addEventListener('mouseover', this._onMouseOver, false);
+      this.events.addEventListener('mouseout', this._onMouseOut, false);
     }
 
     this.removeMouseEventListeners = function() {
-      this._onMouseDown  && this.events.removeEventListener(this, 'mousedown', this._onMouseDown, false);
-      this._onMouseMove  && this.events.removeEventListener(this, 'mousemove', this._onMouseMove, false);
-      this._onMouseWheel && this.events.removeEventListener(this, 'mousewheel', this._onMouseWheel, false);
-      this._onMouseOver  && this.events.removeEventListener(this, "mouseover", this._onMouseOver, false);
-      this._onMouseOut   && this.events.removeEventListener(this, "mouseout", this._onMouseOut, false);
+      this._onMouseDown  && this.events.removeEventListener('mousedown', this._onMouseDown, false);
+      this._onMouseMove  && this.events.removeEventListener('mousemove', this._onMouseMove, false);
+      this._onMouseWheel && this.events.removeEventListener('mousewheel', this._onMouseWheel, false);
+      this._onMouseOver  && this.events.removeEventListener("mouseover", this._onMouseOver, false);
+      this._onMouseOut   && this.events.removeEventListener("mouseout", this._onMouseOut, false);
       this._onMouseDown = null;
       this._onMouseMove = null;
       this._onMouseWheel = null;
@@ -27427,17 +27427,19 @@ var worker = exports.worker = {
       if (mouseevents.processScrollbarMouseEvent(
           this.events, this, this.clickState, evt)) return true;
 
-      var aceCoords = raycasting.raycastIntersectionToDomXY(evt.intersect, this.aceEditor.container);
-      mouseevents.reemit3DMouseEvent(this.events, evt.origDomEvent, this.clickState, this, aceCoords);
+      var origDomEvent = evt.origDomEvent || evt;    
+
+      var aceCoords = raycasting.raycastIntersectionToDomXY(evt.detail.intersection, this.aceEditor.container);
+      mouseevents.reemit3DMouseEvent(this.events, origDomEvent, this.clickState, this, aceCoords);
     }
 
     this.onMouseMove = function(evt) {
-      var aceCoords = raycasting.raycastIntersectionToDomXY(evt.intersect, this.aceEditor.container);
+      var aceCoords = raycasting.raycastIntersectionToDomXY(evt.detail.intersection, this.aceEditor.container);
       mouseevents.reemit3DMouseEvent(this.events, evt.origDomEvent, this.clickState, this, aceCoords);
     }
 
     this.onMouseWheel = function(evt) {
-      var aceCoords = raycasting.raycastIntersectionToDomXY(evt.intersect, this.aceEditor.container);
+      var aceCoords = raycasting.raycastIntersectionToDomXY(evt.detail.intersection, this.aceEditor.container);
       mouseevents.reemit3DMouseEvent(this.events, evt.origDomEvent, this.clickState, this, aceCoords);
     }
 
@@ -28619,6 +28621,8 @@ return;
   }
 
   function processScrollbarMouseEvent(THREExDOMEvents, codeEditor, clickState, evt3D) {
+    console.warn("DISABLING PROCESSSCROLLBARMOUSEVENT");
+    return;
     if (evt3D.type !== 'mousedown') return false;
     var scrollbar = codeEditor.getScrollbar(),
         localBrowserPos = convertToBrowserCoords(evt3D.intersect, codeEditor),
