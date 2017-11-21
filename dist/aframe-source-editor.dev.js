@@ -28778,6 +28778,7 @@ AFRAME.registerPrimitive("a-source-editor", {
   },
   mappings: {
     target: 'source-editor.target',
+		title: 'source-editor.title',
     value: 'source-editor.value',
 		mode: 'source-editor.mode',
 		'save-button': 'source-editor.save-button',
