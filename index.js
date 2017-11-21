@@ -39,7 +39,7 @@
       }
 
       this.vr = options.vr;
-      this.events = options.events || new THREEx.DomEvents(options.camera, options.domElement);
+      this.events = options.events;
 
       // supported events: resize
       lively.lang.events.makeEmitter(this);

@@ -1,7 +1,7 @@
 {
-  "name": "three-codeeditor",
-  "version": "0.1.4-seth.6",
-  "description": "codeeditor for three.js",
+  "name": "a-source-editor",
+  "version": "0.1.4-seth.7",
+  "description": "ACE / codeeditor3d based text editor for A-Frame",
   "main": "index.js",
   "directories": {
     "test": "tests"
@@ -25,6 +25,7 @@
   "keywords": [
     "three.js",
     "codeeditor",
+    "a-frame",
     "programming"
   ],
   "author": "Robert Krahn",
