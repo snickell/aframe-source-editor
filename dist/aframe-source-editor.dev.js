@@ -28731,6 +28731,17 @@ AFRAME.registerComponent("source-editor", {
   	this.el.dispatchEvent(saveEvent);
   },
   update: function () {
+		if (this.data.mode) {
+			this.getAceEditor().setOption("mode", "ace/mode/" + this.data.mode);
+		}		
+
+		if (this.data.target) {
+      this.target = document.getElementById(this.data.target);
+      this.updateFromTarget();
+    } else if (this.data.value) {
+      this.setText(this.data.value);
+    }
+				
 		if (this.data.title) {
       const title = document.createElement("a-text");
       title.setAttribute("value", "Component: " + this.target.getAttribute("name"));
@@ -28750,17 +28761,10 @@ AFRAME.registerComponent("source-editor", {
 	    saveButton.setAttribute("scale", "0.7 0.7 0.7");
 	    this.el.appendChild(saveButton);			
 		}
-				
-    if (this.data.value) {
-      this.setText(this.data.value);
-    } else if (this.data.target) {
-      this.target = document.getElementById(this.data.target);
-      this.updateFromTarget();
-    }
 		
-		if (this.data.mode) {
-			this.getAceEditor().setOption("mode", "ace/mode/" + this.data.mode);
-		}
+
+		
+
   },
   updateFromTarget: function () {
     this.setText(this.target.innerText);
