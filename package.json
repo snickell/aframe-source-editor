@@ -1,14 +1,11 @@
 {
-  "name": "a-source-editor",
-  "version": "0.1.4-seth.7",
-  "description": "ACE / codeeditor3d based text editor for A-Frame",
+  "name": "aframe-source-editor",
+  "version": "0.1.1",
+  "description": "Source code / text editor component for A-Frame (wraps ACE)",
   "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
+  "unpkg": "dist/aframe-source-editor.min.js",
   "dependencies": {},
   "devDependencies": {
-    "chai": "*",
     "grunt": "^0.4.5",
     "grunt-contrib-concat": "^0.5.0",
     "grunt-contrib-jshint": "^0.10.0",
@@ -16,18 +13,26 @@
     "grunt-curl": "^2.0.3",
     "grunt-shell": "^1.1.1",
     "imagediff": "^1.0.7",
-    "load-grunt-tasks": "^1.0.0",
-    "mocha": "*"
+    "load-grunt-tasks": "^1.0.0"
   },
   "scripts": {
-    "test": "open tests/run-tests.html"
   },
   "keywords": [
-    "three.js",
-    "codeeditor",
-    "a-frame",
-    "programming"
+    "aframe",
+    "aframe-component",
+    "aframe-vr",
+    "vr",
+    "mozvr",
+    "webvr",
+    "source-editor",
+		"ace"
   ],
-  "author": "Robert Krahn",
-  "license": "MIT"
+  "author": "Seth Nickell",
+  "license": "MIT",
+  "semistandard": {
+    "globals": [
+      "AFRAME",
+      "THREE"
+    ]
+	}	
 }

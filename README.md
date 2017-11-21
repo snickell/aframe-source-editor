@@ -1,4 +1,6 @@
-# a-source-editor
+# aframe-source-editor
+
+<a-source-editor >
 
 ## Building
 

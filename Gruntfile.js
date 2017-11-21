@@ -54,7 +54,7 @@ module.exports = function(grunt) {
     // -=-=-=-=-=-=-=-
     concat: {
       options: {sourceMap: true, sourceMapStyle: 'link', separator: ';\n'},
-      "a-source-editor.dev.js": {
+      "aframe-source-editor.dev.js": {
         src: ["vendor/ace/ace.js",
               "vendor/ace/ext-language_tools.js",
               "vendor/lively.lang.dev.js",
@@ -67,13 +67,13 @@ module.exports = function(grunt) {
               "lib/raycasting.js",
               "lib/mouseevents.js",
               "lib/rendering.js",
-              "lib/a-source-editor.js"],
-        dest: "a-source-editor.dev.js"
+              "lib/aframe-source-editor.js"],
+        dest: "dist/aframe-source-editor.dev.js"
       }
     },
 
     uglify: {
-      "a-source-editor.min.js": {
+      "aframe-source-editor.min.js": {
         options: {
           sourceMap: true,
           preserveComments: (function() {
@@ -83,7 +83,7 @@ module.exports = function(grunt) {
           banner: '/*! <%= pkg.name %>-v<%= pkg.version %> '
                 + '<%= grunt.template.today("yyyy-mm-dd") %> */\n'
         },
-        files: {"a-source-editor.min.js": "a-source-editor.dev.js"}
+        files: {"dist/aframe-source-editor.min.js": "dist/aframe-source-editor.dev.js"}
       }
     }
 
@@ -93,6 +93,6 @@ module.exports = function(grunt) {
   grunt.registerTask('update-ace',         ['shell:ace-clean', 'curl-dir:update-ace', 'shell:update-ace']);
   grunt.registerTask('update-lively.lang', ['curl-dir:update-lively.lang']);
   grunt.registerTask('updateLibs',         ['update-ace', 'update-lively.lang']);
-  grunt.registerTask('build',              ['concat:a-source-editor.dev.js', 'uglify:a-source-editor.min.js']);
+  grunt.registerTask('build',              ['concat:aframe-source-editor.dev.js', 'uglify:aframe-source-editor.min.js']);
   
 };
