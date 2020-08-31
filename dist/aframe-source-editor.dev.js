@@ -28658,8 +28658,6 @@ return;
 
 })(THREE.CodeEditor.rendering || (THREE.CodeEditor.rendering = {}));
 ;
-console.log("Registering a-source-editor!");
-
 AFRAME.registerComponent("source-editor", {
   schema: {
     value: { type: 'string' },
