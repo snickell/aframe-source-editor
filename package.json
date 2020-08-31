@@ -15,8 +15,7 @@
     "imagediff": "^1.0.7",
     "load-grunt-tasks": "^1.0.0"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "keywords": [
     "aframe",
     "aframe-component",
@@ -25,7 +24,7 @@
     "mozvr",
     "webvr",
     "source-editor",
-		"ace"
+    "ace"
   ],
   "author": "Seth Nickell",
   "license": "MIT",
@@ -34,5 +33,5 @@
       "AFRAME",
       "THREE"
     ]
-	}	
+  }
 }
