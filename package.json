@@ -1,6 +1,6 @@
 {
   "name": "aframe-source-editor",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Source code / text editor component for A-Frame (wraps ACE)",
   "main": "index.js",
   "unpkg": "dist/aframe-source-editor.min.js",

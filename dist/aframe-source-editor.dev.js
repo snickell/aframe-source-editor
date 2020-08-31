@@ -26891,7 +26891,7 @@ var worker = exports.worker = {
       THREE.Mesh.call(this, editorGeo, material);
 
       editorGeo.computeBoundingBox();
-      this.position.copy(editorGeo.boundingBox.center());
+      editorGeo.boundingBox.getCenter(this.position);
 
       // creating the ace editor instance that will work behind the scenes as our "model"
       var aceEditor;
@@ -26901,6 +26901,7 @@ var worker = exports.worker = {
         aceEditor = this.aceEditor = aceHelper.createAceEditor(
           offset.left, offset.top, width, height);
       }
+      editor.$blockScrolling = Infinity;
 
       aceEditor.parent3d = this; // FIXME backlink for autocompleter
 
