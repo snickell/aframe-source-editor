@@ -1,10 +1,10 @@
 {
   "name": "aframe-source-editor",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Source code / text editor component for A-Frame (wraps ACE)",
   "main": "index.js",
   "unpkg": "dist/aframe-source-editor.min.js",
-  "module": "dist/aframe-source-editor.min.js",
+  "module": "dist/aframe-source-editor.dev.js",
   "scripts": {
     "build": "npx grunt build"
   },
