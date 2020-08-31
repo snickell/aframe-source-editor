@@ -26901,7 +26901,7 @@ var worker = exports.worker = {
         aceEditor = this.aceEditor = aceHelper.createAceEditor(
           offset.left, offset.top, width, height);
       }
-      editor.$blockScrolling = Infinity;
+      aceEditor.$blockScrolling = Infinity;
 
       aceEditor.parent3d = this; // FIXME backlink for autocompleter
 
