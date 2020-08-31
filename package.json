@@ -4,6 +4,9 @@
   "description": "Source code / text editor component for A-Frame (wraps ACE)",
   "main": "index.js",
   "unpkg": "dist/aframe-source-editor.min.js",
+  "scripts": {
+    "build": "npx grunt build"
+  },
   "dependencies": {},
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -15,7 +18,6 @@
     "imagediff": "^1.0.7",
     "load-grunt-tasks": "^1.0.0"
   },
-  "scripts": {},
   "keywords": [
     "aframe",
     "aframe-component",
