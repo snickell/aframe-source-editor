@@ -1,5 +1,6 @@
 
 import { chain } from './deadly/lang/chain.js'
+import { DOMEvents as THREExDOMEvents } from './vendor/threex.domevents.js'
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // "imports"

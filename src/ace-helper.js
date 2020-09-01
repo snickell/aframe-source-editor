@@ -1,3 +1,8 @@
+import ace from '../vendor/ace/ace.js'
+import extLanguageTools from '../vendor/ace/ext-language_tools'
+
+export const lib = { ace, extLanguageTools }
+
 export function createAceEditor(posX, posY, width, height) {
   var el = document.createElement("div");
   document.body.appendChild(el);
