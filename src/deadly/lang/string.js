@@ -7,4 +7,4 @@ export function truncate(s, length, truncation) {
   truncation = truncation === undefined ? '...' : truncation;
   return s.length > length ?
     s.slice(0, length - truncation.length) + truncation : String(s);
-},
+}

@@ -54,6 +54,12 @@ module.exports = function(grunt) {
     // -=-=-=-=-=-=-=-
     concat: {
       options: {sourceMap: true, sourceMapStyle: 'link', separator: ';\n'},
+      "ace.js": {
+        src: ["vendor/ace/ace.js",
+              "vendor/ace/ext-language_tools.js",
+              "src/ace-helper.js"],
+        dest: "src/vendor/ace.js"
+      },
       "aframe-source-editor.dev.js": {
         src: ["vendor/ace/ace.js",
               "vendor/ace/ext-language_tools.js",
@@ -93,6 +99,6 @@ module.exports = function(grunt) {
   grunt.registerTask('update-ace',         ['shell:ace-clean', 'curl-dir:update-ace', 'shell:update-ace']);
   grunt.registerTask('update-lively.lang', ['curl-dir:update-lively.lang']);
   grunt.registerTask('updateLibs',         ['update-ace', 'update-lively.lang']);
-  grunt.registerTask('build',              ['concat:aframe-source-editor.dev.js', 'uglify:aframe-source-editor.min.js']);
+  grunt.registerTask('build',              ['concat:ace.js', 'concat:aframe-source-editor.dev.js']);
   
 };

@@ -1,4 +1,6 @@
 import { CodeEditor } from './code-editor.js'
+import { javascript } from './commands.js'
+import { installDynamicJSCompleterInto } from './autocomplete.js'
 
 AFRAME.registerComponent("source-editor", {
   schema: {
@@ -18,7 +20,7 @@ AFRAME.registerComponent("source-editor", {
 		
     this.codeEditor = codeEditor;
     
-    codeEditor.aceEditor.commands.addCommands(CodeEditor.commands.javascript);
+    codeEditor.aceEditor.commands.addCommands(javascript);
 
     ace.config.set("basePath", "https://unpkg.com/aframe-source-editor@0.1.1/vendor/ace/");
     ace.config.set("modePath", "https://unpkg.com/aframe-source-editor@0.1.1/vendor/ace/");
@@ -39,7 +41,7 @@ AFRAME.registerComponent("source-editor", {
       enableSnippets: true,
     });
 
-    CodeEditor.autocomplete.installDynamicJSCompleterInto(codeEditor.aceEditor);
+    installDynamicJSCompleterInto(codeEditor.aceEditor);
     codeEditor.aceEditor.setOption("mode", "ace/mode/javascript");
     
 

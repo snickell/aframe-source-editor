@@ -1,7 +1,5 @@
-import * as ace from '../vendor/ace/ace.js'
-import * as extLanguageTools from '../vendor/ace/ext-language_tools'
-
-export const lib = { ace, extLanguageTools }
+// import * as ace from '../vendor/ace/ace.js'
+// import * as extLanguageTools from '../vendor/ace/ext-language_tools.js'
 
 export function createAceEditor(posX, posY, width, height) {
   var el = document.createElement("div");

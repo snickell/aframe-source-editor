@@ -1,5 +1,5 @@
 
-import { chain } from './deadly/lang/chain.js'
+import { wrap, getOriginal } from './deadly/lang/fun.js'
 import { DOMEvents as THREExDOMEvents } from './vendor/threex.domevents.js'
 import { retargetDOMEvent } from './domevents.js'
 import { pickingRay, convertToBrowserCoords, convertEventPos3DtoHTML, getRelativeMouseXYFromEvent } from './raycasting.js'
@@ -118,36 +118,43 @@ function patchAceEventMethods(THREExDOMEvents, aceEd, codeEditor) {
   var aceEdEl = aceEd.renderer.content;
 
   // we patch methods so that we can install method patchers... uuuuha
-  aceEd.$mouseHandler.captureMouse = chain(aceEd.$mouseHandler.captureMouse)
-    .getOriginal().wrap(function(proceed, evt, mouseMoveHandler) {
+  aceEd.$mouseHandler.captureMouse = wrap(
+    getOriginal(aceEd.$mouseHandler.captureMouse),
+    function(proceed, evt, mouseMoveHandler) {
       evt.domEvent = retargetDOMEvent(evt.domEvent, convertEventPos3DtoHTML(evt, THREExDOMEvents._camera, THREExDOMEvents._domElement, aceEdEl, codeEditor, {x:0,y:aceEd.renderer.layerConfig.offset}, !!codeEditor.vr), aceEdEl);
 
-      mouseMoveHandler = mouseMoveHandler && chain(mouseMoveHandler)
-        .getOriginal()
-        .wrap(function(proceed, evt) {
+      mouseMoveHandler = mouseMoveHandler && wrap(
+        getOriginal(mouseMoveHandler),
+        function(proceed, evt) {
           return evt && proceed(
             retargetDOMEvent(evt, convertEventPos3DtoHTML(evt, THREExDOMEvents._camera, THREExDOMEvents._domElement, aceEdEl, codeEditor, {x:0,y:aceEd.renderer.layerConfig.offset}, !!codeEditor.vr), aceEdEl));
-        }).value();
+        }
+      )
       return proceed(evt, mouseMoveHandler);
-    }).value();
+    }
+  )
 
-  aceEventLib.capture = chain(aceEventLib.capture)
-    .getOriginal().wrap(function(proceed, el, eventHandler, releaseCaptureHandler) {
+  aceEventLib.capture = wrap(
+    getOriginal(aceEventLib.capture),
+    function(proceed, el, eventHandler, releaseCaptureHandler) {
       if (aceEd.container !== el) return proceed(el, eventHandler, releaseCaptureHandler);
-      eventHandler = chain(eventHandler)
-        .getOriginal()
-        .wrap(function(proceed, evt) {
+      eventHandler = wrap(
+        getOriginal(eventHandler),
+        function(proceed, evt) {
           return evt && proceed(
             retargetDOMEvent(evt, convertEventPos3DtoHTML(evt, THREExDOMEvents._camera, THREExDOMEvents._domElement, aceEdEl, codeEditor, {x:0,y:aceEd.renderer.layerConfig.offset}, !!codeEditor.vr), aceEdEl));
-        }).value();
+        }
+      )
 
-      releaseCaptureHandler = chain(releaseCaptureHandler)
-        .getOriginal()
-        .wrap(function(proceed, evt) {
+      releaseCaptureHandler = wrap(
+        getOriginal(releaseCaptureHandler),
+        function(proceed, evt) {
           return evt && proceed(
             retargetDOMEvent(evt, convertEventPos3DtoHTML(evt, THREExDOMEvents._camera, THREExDOMEvents._domElement, aceEdEl, codeEditor, {x:0,y:aceEd.renderer.layerConfig.offset}, !!codeEditor.vr), aceEdEl));
-        }).value();
+        }
+      )
 
       return proceed(el, eventHandler, releaseCaptureHandler);
-    }).value();
+    }
+  )
 }

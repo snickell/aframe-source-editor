@@ -5,7 +5,7 @@
   "Ctrl-V": function(editor) { editor.completer.popup.gotoPageDown(); }
 });
 */
-function merge(objs) {
+export function merge(objs) {
   // `objs` can be a list of objects. The return value will be a new object,
   // containing all properties of all objects. If the same property exist in
   // multiple objects, the right-most property takes precedence.
@@ -15,7 +15,7 @@ function merge(objs) {
   // if objs are arrays just concat them
   // if objs are real objs then merge propertdies
   if (arguments.length > 1) {
-    return obj.merge(Array.prototype.slice.call(arguments));
+    return merge(Array.prototype.slice.call(arguments));
   }
 
   if (Array.isArray(objs[0])) { // test for all?
@@ -100,4 +100,14 @@ export function inspect(object, options, depth) {
       endBreak = useNewLines ? '\n' + ind : '';
   if (useNewLines) printedPropsJoined = printedProps.join(',' + startBreak);
   return openBr + startBreak + printedPropsJoined + endBreak + closeBr;
+}
+
+export function extract(properties, object, mapFunc) {
+  return properties.reduce(function(extracted, name) {
+    if (object.hasOwnProperty(name)) {
+      var val = mapFunc ? mapFunc(name, object[name]) : object[name];
+      extracted[name] = val;
+    }
+    return extracted;
+  }, {});
 }

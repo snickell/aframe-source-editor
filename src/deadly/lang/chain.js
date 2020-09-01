@@ -10,7 +10,7 @@ function createChain(interfaceObj, obj) {
 }
 
 export function chain(object) {  
-  throw Exception("Not implemented: deadly.* is not implemented, but you can find them by searching lively.lang JS for exports.obj, exports.fun, exports.string etc -Seth Aug 31, 2020")
+  throw Exception("Not implemented: deadly.* is not implemented, but you can find them by searching li vely.lang JS for exports.obj, exports.fun, exports.string etc -Seth Aug 31, 2020")
 
   if (!object) return object;
 
