@@ -1,5 +1,4 @@
-
-
+import { detect } from './deadly/lang/arr.js'
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -16,7 +15,7 @@ export function fullscreenElement() {
 };
 
 export function cancelFullscreen() {
-  var method = lively.lang.arr.detect(
+  var method = detect(
     ["cancelFullScreen","mozCancelFullScreen","webkitCancelFullScreen"],
     function(m) { return document[m]; });
   document[method]();
