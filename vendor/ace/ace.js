@@ -3562,7 +3562,7 @@ module.exports = exports = new AppConfig();
 
 var global = (function() {
     return this;
-})();
+})() || window;
 
 var options = {
     packaged: false,
