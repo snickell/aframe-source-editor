@@ -1,5 +1,5 @@
-import ace from '../vendor/ace/ace.js'
-import extLanguageTools from '../vendor/ace/ext-language_tools'
+import * as ace from '../vendor/ace/ace.js'
+import * as extLanguageTools from '../vendor/ace/ext-language_tools'
 
 export const lib = { ace, extLanguageTools }
 

@@ -1,18 +1,12 @@
 
 import { chain } from './deadly/lang/chain.js'
 import { DOMEvents as THREExDOMEvents } from './vendor/threex.domevents.js'
-
+import { retargetDOMEvent } from './domevents.js'
+import { pickingRay, convertToBrowserCoords, convertEventPos3DtoHTML, getRelativeMouseXYFromEvent } from './raycasting.js'
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // "imports"
 var AceMouseEvent = ace.require("ace/mouse/mouse_event").MouseEvent;
 var aceEventLib   = ace.require("ace/lib/event");
-
-var retargetDOMEvent = THREE.CodeEditor.domevents.retargetDOMEvent;
-
-var pickingRay                    = THREE.CodeEditor.raycasting.pickingRay;
-var convertToBrowserCoords        = THREE.CodeEditor.raycasting.convertToBrowserCoords;
-var convertEventPos3DtoHTML       = THREE.CodeEditor.raycasting.convertEventPos3DtoHTML;
-var getRelativeMouseXYFromEvent   = THREE.CodeEditor.raycasting.getRelativeMouseXYFromEvent;
 
 var isFirefox = !!navigator.userAgent.match(/Firefox\//);
 

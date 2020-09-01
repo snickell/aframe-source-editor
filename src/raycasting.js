@@ -1,7 +1,4 @@
-
-// "imports"
-var retargetDOMEvent = THREE.CodeEditor.domevents.retargetDOMEvent;
-var isFullscreen     = THREE.CodeEditor.domevents.isFullscreen;
+import { retargetDOMEvent, isFullscreen } from './domevents.js'
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
