@@ -40,7 +40,7 @@ var ACE_NAMESPACE = "ace";
 
 var global = (function() {
     return this;
-})();
+})() || window;
 
 
 if (!ACE_NAMESPACE && typeof requirejs !== "undefined")
