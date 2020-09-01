@@ -1,3 +1,5 @@
+import { inspect } from './deadly/lang/obj.js'
+
 function loadUncached(urls, thenDo) {
   if (!urls.length) { thenDo && thenDo(); return; }
   var url = urls.shift();
@@ -23,5 +25,5 @@ function show(obj) {
     setTimeout(function() { rect.parentNode.removeChild(rect); }, 3*1000);
     return rect;
   }
-  else return console.log("SHOW: %s", lively.lang.obj.inspect(obj, {maxDepth: 4}));
+  else return console.log("SHOW: %s", inspect(obj, {maxDepth: 4}));
 }

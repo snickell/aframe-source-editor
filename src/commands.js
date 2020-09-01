@@ -1,3 +1,7 @@
+import { inspect } from './deadly/lang/obj.js'
+import { chain } from './deadly/lang/chain.js'
+import { syncEval } from './deadly/vm.js'
+import { query_knownGlobals } from './deadly/ast.js'
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // selection helper
@@ -101,7 +105,7 @@ function doit(ed, printResult, printAsComment) {
       result = tryBoundEval(text, {range: {start: {index: range[0]}, end: {index: range[1]}}});
   if (printResult) {
     if (printAsComment) {
-      try { result = " => " + lively.lang.obj.inspect(result, {maxDepth: 4});
+      try { result = " => " + inspect(result, {maxDepth: 4});
       } catch (e) { result = " => Error printing inspect view of " + result + ": " + e; }
     }
     if (typeof printResult === "function") { // transform func
@@ -121,11 +125,11 @@ function tryBoundEval(__evalStatement, options) {
   options = options || {};
   if (!options.sourceURL) options.sourceURL = doit + "-" + Date.now();
   try {
-    return lively.vm.syncEval(__evalStatement, {
+    return syncEval(__evalStatement, {
       context: options.context || window,
       topLevelVarRecorder: window,
       varRecorderName: 'window',
-      dontTransform: lively.ast.query.knownGlobals,
+      dontTransform: query_knownGlobals(),
       sourceURL: options ? options.sourceURL : undefined
     });
   } catch(e) { return e; }
@@ -185,7 +189,7 @@ export const javascript = [{
       // FIIIIIIIIXME
       lv.l2l.session.actions.completions(
         {data: {expr: getSelectionOrLineString(ed)}}, {answer: function(_, answer) {
-          var props = lively.lang.chain(answer.completions).pluck(1).flatten().value();
+          var props = chain(answer.completions).pluck(1).flatten().value();
           printObject(ed, props.join("\n"), false, true);
         }})
 
@@ -205,7 +209,7 @@ export const javascript = [{
       doit(ed, function(result) {
         return result instanceof Error ?
           result.stack || String(result) :
-          lively.lang.obj.inspect(result, {maxDepth: args && args.count ? args.count : 1});
+          inspect(result, {maxDepth: args && args.count ? args.count : 1});
       });
     }),
     multiSelectAction: "forEach",

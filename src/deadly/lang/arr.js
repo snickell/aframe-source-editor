@@ -14,7 +14,7 @@ export function max(array, iterator, context) {
 }
 
 /*
-  var method = lively.lang.arr.detect(
+  var method = deadly.lang.arr.detect(
     ["cancelFullScreen","mozCancelFullScreen","webkitCancelFullScreen"],
     function(m) { return document[m]; });
 */

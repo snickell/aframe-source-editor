@@ -29,3 +29,75 @@ function merge(objs) {
     return merged;
   }, {});
 }
+
+export function inspect(object, options, depth) {
+  // Prints a human-readable representation of `obj`. The printed
+  // representation will be syntactically correct JavaScript but will not
+  // necessarily evaluate to a structurally identical object. `inspect` is
+  // meant to be used while interactivively exploring JavaScript programs and
+  // state.
+  //
+  // `options` can be {printFunctionSource: BOOLEAN, escapeKeys: BOOLEAN, maxDepth: NUMBER}
+  options = options || {};
+  depth = depth || 0;
+  if (!object) return print(object);
+
+  // print function
+  if (typeof object === 'function') {
+    return options.printFunctionSource ? String(object) :
+      'function' + (object.name ? ' ' + object.name : '')
+      + '(' + argumentNames(object).join(',') + ') {/*...*/}';
+  }
+
+  // print "primitive"
+  switch (object.constructor) {
+    case String:
+    case Boolean:
+    case RegExp:
+    case Number: return print(object);
+  };
+
+  if (typeof object.serializeExpr === 'function')
+    return object.serializeExpr();
+
+  var isArray = object && Array.isArray(object),
+      openBr = isArray ? '[' : '{', closeBr = isArray ? ']' : '}';
+  if (options.maxDepth && depth >= options.maxDepth)
+    return openBr + '/*...*/' + closeBr;
+
+  var printedProps = [];
+  if (isArray) {
+    printedProps = object.map(function(ea) { return inspect(ea, options, depth); });
+  } else {
+    printedProps = Object.keys(object)
+      .sort(function(a, b) {
+        var aIsFunc = typeof object[a] === 'function',
+            bIsFunc = typeof object[b] === 'function';
+        if (aIsFunc === bIsFunc) {
+          if (a < b) return -1;
+          if (a > b) return 1;
+          return 0;
+        }
+        return aIsFunc ? 1 : -1;
+      })
+      .map(function(key, i) {
+        if (isArray) inspect(object[key], options, depth + 1);
+        var printedVal = inspect(object[key], options, depth + 1);
+        return options.escapeKeys ?
+          Strings.print(key) : key + ": " + printedVal;
+      });
+  }
+
+  if (printedProps.length === 0) { return openBr + closeBr; }
+
+  var printedPropsJoined = printedProps.join(','),
+      useNewLines = !isArray
+        && (!options.minLengthForNewLine
+        || printedPropsJoined.length >= options.minLengthForNewLine),
+      ind = indent('', options.indent || '  ', depth),
+      propIndent = indent('', options.indent || '  ', depth + 1),
+      startBreak = useNewLines ? '\n' + propIndent: '',
+      endBreak = useNewLines ? '\n' + ind : '';
+  if (useNewLines) printedPropsJoined = printedProps.join(',' + startBreak);
+  return openBr + startBreak + printedPropsJoined + endBreak + closeBr;
+}
