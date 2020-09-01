@@ -1,0 +1,155 @@
+
+// "imports"
+var retargetDOMEvent = THREE.CodeEditor.domevents.retargetDOMEvent;
+var isFullscreen     = THREE.CodeEditor.domevents.isFullscreen;
+
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+function convertXYToOcculusCoords(coords) {
+  var x = coords.x, y = coords.y;
+
+  var domainXMin = x < 0 ? -1 : 0, domainXMax = x < 0 ? 0 : 1;
+  var domainYMin = -1, domainYMax = 1;
+
+  var relX = (x + (domainXMax - domainXMin)) - domainXMax;
+  var rangeXMin = -.9, rangeXMax = .9;
+
+  var relY = (y + (domainYMax - domainYMin)) - domainYMax;
+  var rangeYMin = -.8, rangeYMax = .8;
+
+// ((rangeYMax - rangeYMin) * relY) - (rangeYMax-rangeYMin)
+
+  return {
+    x: ((rangeXMax - rangeXMin) * relX) - rangeXMax,
+    y: ((rangeYMax - rangeYMin) * relY) - (rangeYMax-rangeYMin),
+    z: coords.z
+  };
+}
+
+export function getRelativeMouseXY(x, y, domElement, mapForVR) {
+  // Converts the browser global (page) x/y coordinates
+  // into relative -1/1 values. These can be used by THREE for raycasting.
+
+  var rect   = domElement.getBoundingClientRect(),
+      relX   = (x - rect.left) / rect.width,
+      relY   = (y - rect.top) / rect.height,
+      coords = {
+        x : (relX * 2) - 1,
+        y : -(relY * 2) + 1,
+        z: 0.5
+      };
+
+  return mapForVR ? convertXYToOcculusCoords(coords) : coords;
+}
+
+export function getRelativeMouseXYFromEvent(domEvent, mapForVR) {
+  return getRelativeMouseXY(domEvent.pageX, domEvent.pageY, domEvent.target || domEvent.srcElement, mapForVR);
+}
+
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+// see https://github.com/mrdoob/three.js/issues/5587
+export function pickingRay(coords, camera) {
+  var raycaster = new THREE.Raycaster();
+  // the camera is assumed _not_ to be a child of a transformed object
+  if ( camera instanceof THREE.PerspectiveCamera ) {
+      raycaster.ray.origin.copy( camera.position );
+      raycaster.ray.direction.set( coords.x, coords.y, 0.5 ).unproject( camera ).sub( camera.position ).normalize();
+  } else if ( camera instanceof THREE.OrthographicCamera ) {
+      raycaster.ray.origin.set( coords.x, coords.y, - 1 ).unproject( camera );
+      raycaster.ray.direction.set( 0, 0, - 1 ).transformDirection( camera.matrixWorld );
+  } else {
+      console.error( 'ERROR: unknown camera type.' );
+  }
+  return raycaster;
+}
+
+export function domEventRaycast(domEvent, camera, mapForVR) {
+  var mouseCoords = getRelativeMouseXYFromEvent(domEvent, mapForVR),
+      vector	    = new THREE.Vector3(mouseCoords.x, mouseCoords.y, 0.5);
+  return pickingRay(vector, camera);
+}
+
+
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// mapping of scene positions
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+export function pickObjFromDOMEvent(evt, camera, objsToPick,mapForVR) {
+  var intersects = domEventRaycast(evt,camera,mapForVR).intersectObjects(objsToPick);
+  return intersects[0];
+}
+
+
+
+
+
+
+
+export function raycastIntersectionToDomXY(intersection, domElement) {
+  if (!intersection) return null;
+          
+  //var localCoords = convertToBrowserCoords(intersection, intersection.object);
+  const mesh3D = intersection.object;
+  mesh3D.geometry.computeBoundingBox();
+  const size = mesh3D.geometry.boundingBox.getSize();
+
+  const x = size.x * intersection.uv.x;
+  const y = size.y * (1.0 - intersection.uv.y);
+  const localCoords = {x:x, y:y};
+
+  var aceCoords = {
+    x: domElement.offsetLeft + localCoords.x,
+    y: domElement.offsetTop + localCoords.y
+  }
+  return aceCoords;
+}
+
+
+
+
+
+// FIXME: SETH, this function is extremely suspect, it did not work
+// for the above usage, maybe something fundamental has changed about the raycaster?
+export function convertToBrowserCoords(intersection, mesh3D) {
+  // Convert the raycast point on mesh3D into the top/left coordinate sytem
+  // of the DOM. The result coords are local to the mesh3D, not its scene.
+  if (!intersection) return null;
+  var cache = intersection.cachedLocalBrowserCoords || (intersection.cachedLocalBrowserCoords = {});
+  if (cache[mesh3D.uuid]) return cache[mesh3D.uuid];
+  mesh3D.geometry.computeBoundingBox()
+  var worldPoint            = intersection.point,
+      size                  = mesh3D.geometry.boundingBox.getSize(),
+      worldCenter           = mesh3D.position.clone().add(mesh3D.geometry.boundingBox.getCenter()),
+      localTopLeft          = mesh3D.worldToLocal(worldCenter).add(size.multiply(new THREE.Vector3(.5,-.5,.5))),
+      localEvt              = mesh3D.worldToLocal(worldPoint.clone()),
+      browserLocalTopLeft   = localTopLeft.clone().add(localEvt).multiply(new THREE.Vector3(1,-1,1))
+  return cache[mesh3D.uuid] = browserLocalTopLeft;
+}
+
+export function convertEventPos3DtoHTML(domEvent, camera, oldEventTargetEl, newEventTargetEl, sceneObject, offset, mapForVR) {
+  // DOM evt on 3D scene -> 2D position onto dom element acting as a hypothetical target.
+  // Note that `oldEventTargetEl` can be choosen by the caller, it does not
+  // neet to be the actual domEvent.target. We use it when getting e.g. scroll
+  // events from the ace editor (target is actually the ace editor element) but
+  // while the mouse is over the 3d canvas. We then get the targeted object and
+  // determine the position the event would have when we would have scrolled
+  // over the ace editor directly.
+  // ....
+  // Takes a domEvent sent to a canvas3d element. Does a ray cast and figures
+  // out if and where `sceneObject` was hit by the event (via the "intersection"
+  // ray cast result). Then projects the position onto
+  // `newEventTargetEl` and returns the local position where this object
+  // would have been hit if it would be the actual event target.
+  var offsetX = offset ? offset.x : 0,
+      offsetY = offset ? offset.y : 0,
+      intersection = pickObjFromDOMEvent(
+        retargetDOMEvent(domEvent,
+        {x: domEvent.pageX+offsetX, y: domEvent.pageY+offsetY},
+        oldEventTargetEl),
+        camera, [sceneObject],
+        mapForVR);
+  return raycastIntersectionToDomXY(intersection, newEventTargetEl);
+}
+
