@@ -1,8 +1,12 @@
 import { CodeEditor } from './code-editor.js'
+import fun from './deadly/lang/fun.js'
+import { syncEval } from './deadly/vm.js'
+import { truncate } from './deadly/lang/string.js'
+import { max } from './deadly/lang/arr.js'
+import { merge } from './deadly/lang/obj.js'
 
 // imports
 var oop = ace.require("ace/lib/oop");
-var fun = lively.lang.fun;
 var AutoComplete = ace.require("ace/autocomplete").Autocomplete;
 var FilteredList = ace.require("ace/autocomplete").FilteredList;
 
@@ -18,14 +22,14 @@ export function installDynamicJSCompleterInto(aceEditor) {
       var result = dynamicCompleter.getCompletions(
         getSelectionOrLineString(editor, pos),
         function(code) {
-          var evaled = lively.vm.syncEval(code, {topLevelVarRecorder: {}, sourceURL: "completions-"+Date.now()});
+          var evaled = syncEval(code, {topLevelVarRecorder: {}, sourceURL: "completions-"+Date.now()});
           return evaled instanceof Error ? null : evaled;
         });
 
       if (!result || !result.completions) return thenDo(null, []);
 
       thenDo(null, result.completions.reduce(function(completions, group) {
-        var groupName = lively.lang.string.truncate(group[0], 20);
+        var groupName = truncate(group[0], 20);
         return completions.concat(group[1].map(function(compl) {
           return {
             caption: "[" + groupName+ "] " + compl,
@@ -68,7 +72,6 @@ export function installDynamicJSCompleterInto(aceEditor) {
 // dynamic JavaScript completer
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-// FIXME this should go into lively.vm!
 var dynamicCompleter = {
 
     getCompletions: function(code, evalFunc) {
@@ -80,7 +83,6 @@ var dynamicCompleter = {
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // rk 2013-10-10 I extracted the code below into a nodejs module (since this
 // stuff is also useful on a server and in other contexts). Right now we have no
-// good way to load nodejs modules into Lively and I inline the code here. Please
 // fix soon!
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // helper
@@ -312,21 +314,15 @@ FilteredList.prototype.filterCompletions = fun.wrap(
     var dynamicCompletions = items.filter(function(ea) { return ea.meta === "dynamic"; });
     var result = proceed(items, needle);
     if (!needle) { // make sure the dynamic completions come first
-      var maxScore = lively.lang.arr.max(result, function(ea) { return ea.score; }).score;
+      var maxScore = max(result, function(ea) { return ea.score; }).score;
       if (!result.length) result = dynamicCompletions;
       dynamicCompletions.forEach(function(ea) { ea.score += maxScore; });
     }
     return result;
-    // var matchedDynamic = result.filter(function(ea) { return ea.meta === "dynamic"; });
-    // var unmatchedDynamic = lively.lang.arr.withoutAll(dynamicCompletions, matchedDynamic);
-    // console.log("#all / #unmatched: %s/%s", matchedDynamic.length, unmatchedDynamic.length);
-    // return matchedDynamic
-    //   .concat(lively.lang.arr.withoutAll(result, matchedDynamic))
-    //   .concat(unmatchedDynamic);
   })
 
 
-AutoComplete.prototype.commands = lively.lang.obj.merge(AutoComplete.prototype.commands, {
+AutoComplete.prototype.commands = merge(AutoComplete.prototype.commands, {
   "Alt-Shift-,": function(editor) { editor.completer.goTo("start"); },
   "Alt-Shift-.": function(editor) { editor.completer.goTo("end"); },
   "Alt-V": function(editor) { editor.completer.popup.gotoPageUp(); },
