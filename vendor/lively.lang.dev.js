@@ -6370,8 +6370,8 @@ var NodejsWorker = {
 
   ensureInitCodeFile: function(options, initCode, thenDo) {
     var path = require("path");
-    var os = require("os");
-    var fs = require("fs");
+    // var os = require("os");
+    // var fs = require("fs");
 
     var workerTmpDir = path.join(os.tmpDir(), 'lively-nodejs-workers/');
     var fn = path.join(workerTmpDir, 'nodejs-worker-init.js');
@@ -6385,8 +6385,8 @@ var NodejsWorker = {
 
   createWorkerCodeFile: function(options, fileName, initCode, thenDo) {
     var path = require("path");
-    var fs = require("fs");
-    var exec = require("child_process").exec;
+    // var fs = require("fs");
+    // var exec = require("child_process").exec;
 
     exec("mkdir -p " + path.dirname(fileName), function(code, out, err) {
       if (code) {
@@ -6402,7 +6402,7 @@ var NodejsWorker = {
 
   startWorker: function(options, thenDo) {
     var util = require("util");
-    var fork = require("child_process").fork;
+    //var fork = require("child_process").fork;
 
     var workerSetupCode = String(NodejsWorker.workerSetupFunction).replace("__FUNCTIONDECLARATIONS__", [
       WorkerSetup.loadDependenciesNodejs,
